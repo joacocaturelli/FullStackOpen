@@ -1,12 +1,15 @@
-const Person = ({person}) => {
+const Person = ({person, handleDelete}) => {
   return (
-    <p key={person.id}>
-      {person.name} {person.number}
-    </p>
+    <>
+      <p key={person.id}>
+        {person.name} {person.number}
+      </p>
+      <button onClick={() => handleDelete(person.id, person.name)}>delete</button>
+    </>
   )
 }
 
-const Persons = ({persons, searchName}) => {
+const Persons = ({persons, searchName, handleDelete}) => {
   const personsToShow = searchName.length === 0
     ? persons
     : persons.filter((person) => (
@@ -16,7 +19,7 @@ const Persons = ({persons, searchName}) => {
   return (
     <div>
       {personsToShow.map((person) => 
-        <Person key={person.id} person={person} />
+        <Person key={person.id} person={person} handleDelete={handleDelete}/>
       )}
     </div>
   )
