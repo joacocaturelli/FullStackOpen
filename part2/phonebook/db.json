@@ -24,6 +24,21 @@
       "name": "Peter Griffin",
       "number": "+63 159 855 214",
       "id": "6CMeWW-Th0Q"
+    },
+    {
+      "name": "Lionel Messi",
+      "number": "+63 12 8456 41",
+      "id": "_InKk2N2Yz4"
+    },
+    {
+      "name": "Zara Larsson",
+      "number": "6651114845",
+      "id": "_16C28pw1OU"
+    },
+    {
+      "name": "Mr. Satán ",
+      "number": "666",
+      "id": "U2Jt0BU8rT0"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

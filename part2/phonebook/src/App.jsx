@@ -2,19 +2,29 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification.jsx'
 import personService from './services/persons.js'
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchName, setSearchName] = useState('')
+  const [notification, setNotification] = useState({ message: null, type: '' })
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
       setPersons(initialPersons)
     })
   }, [])
+
+  const showNotification = (message, type) => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification({ message: null, type: '' })
+    }, 5000)
+  }
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -34,6 +44,9 @@ const App = () => {
           setPersons(persons.map(p => p.id !== person.id ? p : updatedPerson))
           setNewName('')
           setNewNumber('')
+          showNotification(`Updated ${person.name}`, 'success')
+        }).catch(error => {
+          showNotification(`Information of ${person.name} has already been removed from server`, 'error')
         })
       }
     } else {
@@ -42,6 +55,9 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
+        showNotification(`Added ${returnedPerson.name}`, 'success')
+      }).catch(error => {
+        showNotification(`Error creating new contact`, 'error')
       })
     }
   }
@@ -64,16 +80,22 @@ const App = () => {
       
       personService.remove(id).then((removedPerson) => {
         setPersons(persons.filter((person) => person.id !== removedPerson.id))
+        showNotification(`Deleted ${removedPerson.name}`, 'success')
+      }).catch(error => {
+        showNotification(`Error deleting new contact`, 'error')
       })
     }
   }
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+
+      <Notification message={notification.message} type={notification.type} />
+
       <Filter inputValue={searchName} eventController={handleFilterChange}/>
 
-      <h3>Add a new</h3>
+      <h2>Add a new</h2>
       <PersonForm 
         name={newName} 
         number={newNumber} 
@@ -82,7 +104,7 @@ const App = () => {
         numberController={handleNumberChange}
       />
 
-      <h3>Numbers</h3>
+      <h2>Numbers</h2>
       <Persons persons={persons} searchName={searchName} handleDelete={handleDelete} />
     </div>
   )
