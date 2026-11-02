@@ -40,22 +40,24 @@ const App = () => {
 
         const person = persons.find(p => p.name === newName)
 
-        personService.update(person.id, personObject).then((updatedPerson) => {
-          setPersons(persons.map(p => p.id !== person.id ? p : updatedPerson))
-          setNewName('')
-          setNewNumber('')
-          showNotification(`Updated ${person.name}`, 'success')
+        personService.update(person.id, personObject)
+          .then((updatedPerson) => {
+            setPersons(persons.map(p => p.id !== person.id ? p : updatedPerson))
+            setNewName('')
+            setNewNumber('')
+            showNotification(`Updated ${person.name}`, 'success')
         }).catch(error => {
           showNotification(`Information of ${person.name} has already been removed from server`, 'error')
         })
       }
     } else {
 
-      personService.create(personObject).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson))
-        setNewName('')
-        setNewNumber('')
-        showNotification(`Added ${returnedPerson.name}`, 'success')
+      personService.create(personObject)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+          showNotification(`Added ${returnedPerson.name}`, 'success')
       }).catch(error => {
         showNotification(`Error creating new contact`, 'error')
       })
@@ -78,9 +80,10 @@ const App = () => {
 
     if (window.confirm(`Do you really want to remove ${name} from your contacts?`)) {
       
-      personService.remove(id).then((removedPerson) => {
-        setPersons(persons.filter((person) => person.id !== removedPerson.id))
-        showNotification(`Deleted ${removedPerson.name}`, 'success')
+      personService.remove(id)
+        .then(() => {
+          setPersons(persons.filter((person) => person.id !== id))
+          showNotification(`Deleted ${name}`, 'success')
       }).catch(error => {
         showNotification(`Error deleting new contact`, 'error')
       })
