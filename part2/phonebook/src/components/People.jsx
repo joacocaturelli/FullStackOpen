@@ -9,20 +9,20 @@ const Person = ({person, handleDelete}) => {
   )
 }
 
-const Persons = ({persons, searchName, handleDelete}) => {
-  const personsToShow = searchName.length === 0
-    ? persons
-    : persons.filter((person) => (
+const People = ({people, searchName, handleDelete}) => {
+  const peopleToShow = searchName.length === 0
+    ? people
+    : people.filter((person) => (
       person.name.toLowerCase().includes(searchName.toLowerCase())
     ))
     
   return (
     <div>
-      {personsToShow.map((person) => 
+      {peopleToShow.map((person) => 
         <Person key={person.id} person={person} handleDelete={handleDelete}/>
       )}
     </div>
   )
 }
 
-export default Persons
+export default People

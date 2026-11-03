@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
-import Persons from './components/Persons'
+import People from './components/People.jsx'
 import Notification from './components/Notification.jsx'
-import personService from './services/persons.js'
+import personService from './services/people.js'
 import './index.css'
 
 const App = () => {
-  const [persons, setPersons] = useState([]) 
+  const [people, setPeople] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchName, setSearchName] = useState('')
   const [notification, setNotification] = useState({ message: null, type: '' })
 
   useEffect(() => {
-    personService.getAll().then((initialPersons) => {
-      setPersons(initialPersons)
+    personService.getAll().then((initialPeople) => {
+      setPeople(initialPeople)
     })
   }, [])
 
@@ -34,15 +34,15 @@ const App = () => {
       number: newNumber
     }
 
-    if (persons.some(person => person.name === newName)) {
+    if (people.some(person => person.name === newName)) {
 
       if (window.confirm(`${newName} is alredy added to phonebook, replace the old number with a new one?`)) {
 
-        const person = persons.find(p => p.name === newName)
+        const person = people.find(p => p.name === newName)
 
         personService.update(person.id, personObject)
           .then((updatedPerson) => {
-            setPersons(persons.map(p => p.id !== person.id ? p : updatedPerson))
+            setPeople(people.map(p => p.id !== person.id ? p : updatedPerson))
             setNewName('')
             setNewNumber('')
             showNotification(`Updated ${person.name}`, 'success')
@@ -54,7 +54,7 @@ const App = () => {
 
       personService.create(personObject)
         .then((returnedPerson) => {
-          setPersons(persons.concat(returnedPerson))
+          setPeople(people.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
           showNotification(`Added ${returnedPerson.name}`, 'success')
@@ -82,7 +82,7 @@ const App = () => {
       
       personService.remove(id)
         .then(() => {
-          setPersons(persons.filter((person) => person.id !== id))
+          setPeople(people.filter((person) => person.id !== id))
           showNotification(`Deleted ${name}`, 'success')
       }).catch(error => {
         showNotification(`Error deleting new contact`, 'error')
@@ -108,7 +108,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons persons={persons} searchName={searchName} handleDelete={handleDelete} />
+      <People people={people} searchName={searchName} handleDelete={handleDelete} />
     </div>
   )
 }
