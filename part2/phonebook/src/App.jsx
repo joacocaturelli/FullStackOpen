@@ -11,19 +11,23 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchName, setSearchName] = useState('')
-  const [notification, setNotification] = useState({ message: null, type: '' })
+  const [notification, setNotification] = useState({ type: '', message: null, error: null })
 
   useEffect(() => {
-    personService.getAll().then((initialPeople) => {
-      setPeople(initialPeople)
-    })
+    personService.getAll()
+      .then((initialPeople) => {setPeople(initialPeople)})
+      .catch(error => {console.log(error.response.data.error)})
   }, [])
 
-  const showNotification = (message, type) => {
-    setNotification({ message, type })
+  const showNotification = (type, message, error) => {
+    console.log('t', type);
+    console.log('m', message);
+    console.log('e', error);
+    
+    setNotification({ type, message, error })
     setTimeout(() => {
-      setNotification({ message: null, type: '' })
-    }, 5000)
+      setNotification({ type: '', message: null, error: null })
+    }, 7000)
   }
 
   const addPerson = (event) => {
@@ -45,9 +49,9 @@ const App = () => {
             setPeople(people.map(p => p.id !== person.id ? p : updatedPerson))
             setNewName('')
             setNewNumber('')
-            showNotification(`Updated ${person.name}`, 'success')
+            showNotification('success', `Updated ${person.name}`)
         }).catch(error => {
-          showNotification(`Information of ${person.name} has already been removed from server`, 'error')
+          showNotification('err', `Error updating ${person.name}`, error.response.data.error)
         })
       }
     } else {
@@ -57,9 +61,9 @@ const App = () => {
           setPeople(people.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
-          showNotification(`Added ${returnedPerson.name}`, 'success')
+          showNotification('success', `Added ${returnedPerson.name}`)
       }).catch(error => {
-        showNotification(`Error creating new contact`, 'error')
+        showNotification('err', `Error creating new contact`, error.response.data.error)
       })
     }
   }
@@ -83,9 +87,9 @@ const App = () => {
       personService.remove(id)
         .then(() => {
           setPeople(people.filter((person) => person.id !== id))
-          showNotification(`Deleted ${name}`, 'success')
+          showNotification('success', `Deleted ${name}`)
       }).catch(error => {
-        showNotification(`Error deleting new contact`, 'error')
+        showNotification('err', `Error deleting contact`, error.response.data.error)
       })
     }
   }
@@ -94,7 +98,7 @@ const App = () => {
     <div>
       <h1>Phonebook</h1>
 
-      <Notification message={notification.message} type={notification.type} />
+      <Notification type={notification.type} message={notification.message} error={notification.error} />
 
       <Filter inputValue={searchName} eventController={handleFilterChange}/>
 
