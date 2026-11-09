@@ -34,11 +34,11 @@ const App = () => {
       number: newNumber
     }
 
-    if (people.some(person => person.name === newName)) {
+    if (people.some(person => person.name.toLowerCase() === newName.toLowerCase())) {
 
       if (window.confirm(`${newName} is alredy added to phonebook, replace the old number with a new one?`)) {
 
-        const person = people.find(p => p.name === newName)
+        const person = people.find(p => p.name.toLowerCase() === newName.toLowerCase())
 
         personService.update(person.id, personObject)
           .then((updatedPerson) => {
